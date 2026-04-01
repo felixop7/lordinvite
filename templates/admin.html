@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:     #0f1117;
+      --surface:#171b25;
+      --border: #252b3a;
+      --accent: #4f8ef7;
+      --text:   #e2e8f0;
+      --muted:  #64748b;
+      --green:  #34d399;
+      --red:    #f87171;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100dvh;
+      padding: 32px 20px;
+    }
+
+    header {
+      max-width: 900px;
+      margin: 0 auto 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo span {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+
+    a.logout {
+      font-size: .8rem;
+      color: var(--muted);
+      text-decoration: none;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+      transition: color .2s, border-color .2s;
+    }
+
+    a.logout:hover { color: var(--red); border-color: var(--red); }
+
+    /* ── login card ── */
+    .login-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 80dvh;
+    }
+
+    .login-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 24px 64px rgba(0,0,0,.4);
+    }
+
+    .login-card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 6px;
+    }
+
+    .login-card p {
+      color: var(--muted);
+      font-size: .88rem;
+      margin-bottom: 28px;
+    }
+
+    input[type="password"] {
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 13px 16px;
+      font-family: 'DM Mono', monospace;
+      font-size: .95rem;
+      color: var(--text);
+      outline: none;
+      margin-bottom: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    input[type="password"]:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(79,142,247,.15);
+    }
+
+    .btn {
+      width: 100%;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: .95rem;
+      color: #fff;
+      cursor: pointer;
+      transition: opacity .2s;
+    }
+
+    .btn:hover { opacity: .88; }
+
+    .error {
+      background: rgba(248,113,113,.1);
+      border: 1px solid rgba(248,113,113,.3);
+      color: var(--red);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: .84rem;
+      margin-bottom: 16px;
+    }
+
+    /* ── dashboard ── */
+    .dash {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px 24px;
+    }
+
+    .stat-label {
+      font-size: .75rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 600;
+      color: var(--accent);
+      font-family: 'DM Mono', monospace;
+    }
+
+    .table-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .table-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .table-header h3 { font-size: 1rem; font-weight: 600; }
+
+    .search {
+      background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: .85rem;
+      color: var(--text);
+      outline: none;
+      width: 200px;
+    }
+
+    .search::placeholder { color: var(--muted); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    thead th {
+      text-align: left;
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--muted);
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    tbody tr {
+      border-bottom: 1px solid rgba(37,43,58,.6);
+      transition: background .15s;
+    }
+
+    tbody tr:last-child { border-bottom: none; }
+    tbody tr:hover { background: rgba(255,255,255,.025); }
+
+    tbody td {
+      padding: 14px 24px;
+      font-size: .9rem;
+    }
+
+    .td-id {
+      font-family: 'DM Mono', monospace;
+      font-size: .8rem;
+      color: var(--muted);
+    }
+
+    .td-name { font-weight: 500; }
+
+    .td-date {
+      font-family: 'DM Mono', monospace;
+      font-size: .78rem;
+      color: var(--muted);
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 24px;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    @media (max-width: 540px) {
+      .search { width: 120px; }
+      thead th, tbody td { padding: 12px 14px; }
+    }
+  </style>
+</head>
+<body>
+
+{% if rows is none %}
+  <!-- ── Login screen ── -->
+  <div class="login-wrap">
+    <div class="login-card">
+      <h2>Admin Access</h2>
+      <p>Enter the dashboard password to continue.</p>
+      {% if error %}
+        <div class="error">{{ error }}</div>
+      {% endif %}
+      <form method="POST">
+        <input type="password" name="password" placeholder="Password" autofocus required />
+        <button class="btn" type="submit">Unlock Dashboard</button>
+      </form>
+    </div>
+  </div>
+
+{% else %}
+  <!-- ── Dashboard ── -->
+  <header>
+    <div class="logo"><span></span> Invite Admin</div>
+    <a class="logout" href="{{ request.path }}/logout">Logout</a>
+  </header>
+
+  <div class="dash">
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">Total Generations</div>
+        <div class="stat-value">{{ rows | length }}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Latest Name</div>
+        <div class="stat-value" style="font-size:1.1rem; padding-top:6px; color:var(--text)">
+          {{ rows[0].name if rows else '—' }}
+        </div>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <h3>All Generations</h3>
+        <input class="search" id="search" type="text" placeholder="Filter names…" />
+      </div>
+
+      {% if rows %}
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Timestamp (UTC)</th>
+          </tr>
+        </thead>
+        <tbody id="table-body">
+          {% for row in rows %}
+          <tr>
+            <td class="td-id">{{ row.id }}</td>
+            <td class="td-name">{{ row.name }}</td>
+            <td class="td-date">{{ row.created }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+        <div class="empty">No videos generated yet.</div>
+      {% endif %}
+    </div>
+  </div>
+
+  <script>
+    // Live search filter
+    document.getElementById('search').addEventListener('input', function () {
+      const q = this.value.toLowerCase();
+      document.querySelectorAll('#table-body tr').forEach(tr => {
+        const name = tr.querySelector('.td-name').textContent.toLowerCase();
+        tr.style.display = name.includes(q) ? '' : 'none';
+      });
+    });
+  </script>
+{% endif %}
+
+</body>
+</html>
