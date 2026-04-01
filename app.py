@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from PIL import Image, ImageDraw, ImageFont
 
 # ── ffmpeg PATH fix ───────────────────────────────────────────────
+# (Optional: only needed if using /server-side video generation)  
 _local_bin = os.path.join(os.path.expanduser("~"), ".local", "bin")
 if _local_bin not in os.environ.get("PATH", ""):
     os.environ["PATH"] = _local_bin + os.pathsep + os.environ.get("PATH", "")
@@ -182,6 +183,12 @@ def render_video_job(job_id: str, name: str):
 # ─────────────────────────────────────────────
 @app.route("/")
 def index():
+    # Serve the browser-based WASM version (uses user's CPU, no server encoding)
+    return render_template("index_wasm.html")
+
+@app.route("/server")
+def server_version():
+    # Legacy server-based version (kept for backup/testing)
     return render_template("index.html")
 
 
