@@ -11,7 +11,7 @@
 
     @font-face {
       font-family: 'CustomFont';
-      src: url('/static/assets/myfont.ttf') format('truetype');
+      src: url('./assets/myfont.ttf') format('truetype');
       font-weight: normal;
       font-style: normal;
     }
@@ -360,9 +360,9 @@
     <p class="footer-note">Your video will download automatically.<br>On iPhone, tap <strong>Download</strong> in Safari's menu.</p>
   </div>
 
-  <!-- FFmpeg WASM Library - served locally from /static/assets/lib/ -->
-  <script src="/static/assets/lib/ffmpeg.js"></script>
-  <script src="/static/assets/lib/ffmpeg-util.js"></script>
+  <!-- FFmpeg WASM Library - served from relative path (works on Flask & GitHub Pages) -->
+  <script src="./assets/lib/ffmpeg.js"></script>
+  <script src="./assets/lib/ffmpeg-util.js"></script>
 
   <script>
     // Detect environment
@@ -414,13 +414,9 @@
       });
     }
 
-    // Configuration - serve from appropriate location
-    const TEMPLATE_URL = isLocalhost
-      ? "/static/assets/invite_template.mp4"
-      : "/assets/invite_template.mp4";
-    const FONT_URL = isLocalhost
-      ? "/static/assets/myfont.ttf"
-      : "/assets/myfont.ttf";
+    // Configuration - use relative paths (works on both Flask & GitHub Pages)
+    const TEMPLATE_URL = "./assets/invite_template.mp4";
+    const FONT_URL = "./assets/myfont.ttf";
 
     const form        = document.getElementById('invite-form');
     const overlay     = document.getElementById('overlay');
@@ -474,8 +470,8 @@
         }
         
         try {
-          // Use absolute URLs for all FFmpeg WASM paths
-          const baseURL = window.location.origin + '/static/assets/lib/';
+          // Use relative path for FFmpeg WASM (works on Flask locally & GitHub Pages)
+          const baseURL = './assets/lib/';
           
           console.log('Loading FFmpeg from:', baseURL);
           
