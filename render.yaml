@@ -3,7 +3,7 @@ services:
     name: invite-video-app
     env: python
     buildCommand: bash render-build.sh
-    startCommand: gunicorn app:app --worker-class gevent --workers 1 --timeout 300 --keep-alive 5
+    startCommand: gunicorn app:app --workers 1 --timeout 300 --graceful-timeout 300
     envVars:
       - key: SECRET_KEY
         generateValue: true
